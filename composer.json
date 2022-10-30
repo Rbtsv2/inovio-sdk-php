@@ -20,7 +20,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Inovio\\Api\\": "src/"
+      "": "src/"
     }
   },
   "autoload-dev": {
