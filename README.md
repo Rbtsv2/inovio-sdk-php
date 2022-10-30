@@ -4,6 +4,15 @@ inovio-sdk-php for payment Gateway
 
 [InovioPay](https://www.inoviopay.com/) Inovio is payments gateway.
 
+## REQUIREMENT
+
+no dependencies required ! 
+
+## COMPATIBLE
+
+php >=5.4
+symfony >=3.4
+
 ## Installation
 
 To install, simply add it to your `composer.json` file:
