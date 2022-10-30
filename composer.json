@@ -19,6 +19,6 @@
     }
   ],
   "autoload": {
-    "psr-4": { "Omnipay\\InovioPay\\" : "src/" }
+    "psr-4": { "Inovio\\Api\\" : "src/" }
   }
 }
