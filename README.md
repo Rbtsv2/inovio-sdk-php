@@ -9,21 +9,22 @@ inovio-sdk-php for payment Gateway
 To install, simply add it to your `composer.json` file:
 
 ```json
-{
-    "type": "git",
-    "url": "https://github.com/Rbtsv2/inovio-sdk-php.git"
-}
+
+   "repositories": [
+        {
+        "type": "git",
+        "url": "https://github.com/Rbtsv2/inovio-sdk-php.git"
+        }
+  ],
+
 ```
 
 ```json
-{
-   "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/Rbtsv2/inovio-sdk-php.git"
+
+    "require": {
+        "rbtsv2/inovio-sdk-php": "dev-main"
     }
-  ],
-}
+    
 ```
 
 And run composer to update your dependencies:
