@@ -18,9 +18,12 @@
       "email": "charles.fournier@sodevnet.com"
     }
   ],
+  "config": {
+    "sort-packages": true
+  },
   "autoload": {
     "psr-4": {
-      "": "src/"
+      "Inovio\\Api\\": "src/"
     }
   },
   "autoload-dev": {
