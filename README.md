@@ -33,25 +33,27 @@ composer require rbtsv2/inovio-sdk-php
 ## Start
 
 ```php
-    /**
-    * To call InovioPay Payments API, reqUsername, reqPassword, siteId, merchAcctId must be passed.
-    * This can be seen in InovioPay admin portal.
-    * Initialize the gateway
-    */
-    $gateway = new InovioGateway();
-    $gateway->initialize([
-        'reqUsername'              => 'test@example.com',
-        'reqPassword'              => 'P5ssw0rd!1',
-        'siteId'                   => '64557',
-        'merchAcctId'              => '66824',
-        'request _action'          => 'TESTAUTH',
-        'productId'                => 85299,
-        'request_response_format'  => 'json',
-        'request_api_version'      => "4.5"
-    ]);
 
-    // Create a credit card object
-    $cardObject = $gateway->createCardObject([
+    /**
+    * Initialize the inovio gateway Payments API, username, password, site_Id, merchand_account_id must be passed.
+    * @param string username
+    * @param string password
+    * @param int site_id
+    * @param int merchand_account_id
+    * @param string format response json or xml (default : json) 
+    */
+    $this->inovio = new \Inovio\Api\InovioApiGateway('test@exemple.com', 'password', 1, 10, 'json');
+
+
+    /**
+    * check if the service api is available
+    */   
+    $response = $this->inovio->auth();
+
+    /**
+    * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
+    */
+    $response = $this->inovio->AuthorizationAndCaptureWithToken([
         'firstName'       => 'Example',
         'lastName'        => 'Customer',
         'number'          => '4242424242424242',
@@ -65,6 +67,8 @@ composer require rbtsv2/inovio-sdk-php
         'billingPostcode' => '567278',
         'billingState'    => 'Singapore',
     ]);
+
+
 
     // Do a purchase transaction on the gateway
     $transaction = $gateway->purchase([
