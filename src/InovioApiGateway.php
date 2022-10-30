@@ -57,7 +57,6 @@ class InovioApiGateway
     */
     private $site_id;
 
-
     /**
     * @var int
     */
@@ -73,6 +72,17 @@ class InovioApiGateway
     * @var string
     */
     private $request_action;
+
+    /**
+    * @var array
+    */
+    private $card_params;
+
+    /**
+    * @var array
+    */
+    private $transaction_params;
+
     /**
     * HTTP Methods
     */
@@ -117,8 +127,6 @@ class InovioApiGateway
 
     }
 
-    ////////////////////////////////////////////METHOS PUBLIC/////////////////////////
-
     /**
      * @param string $param_url
      * @return string
@@ -141,19 +149,16 @@ class InovioApiGateway
         return $this->initialize($post_params, self::API_PAYMENT, 'POST');
     }
 
-    public function AuthorizationAndCaptureWithToken(array $post_params = []) {
+    public function AuthorizationAndCapture(array $client_params = []) {
 
         $this->setRequestAction(self::REQUEST_ACTION_AUTH_CAPTURE);
 
+        $post_params = $this->createTransaction($client_params);
+    
         return $this->initialize($post_params, self::API_PAYMENT, 'POST');
 
     }
 
-    public function createCard(array $post_params = []) {
-
-        return $this->initialize($post_params, self::API_PAYMENT, 'POST');
-
-    }
 
     public function refund(array $post_params = []) {
 
@@ -161,18 +166,47 @@ class InovioApiGateway
 
     }
 
+    private function createCard(array $card_param) {
 
+        return $this->card_params = [
+            'firstName'       => $this->setFirstname($card_param['firstName']),
+            'lastName'        => $this->setLastname($card_param['firstName']),
+            'number'          => $this->setNumber($card_param['firstName']),
+            'expiryMonth'     => $this->setExpiryMonth($card_param['firstName']), 
+            'expiryYear'      => $this->setExpiryYear($card_param['firstName']), 
+            'cvv'             => $this->setCvc($card_param['firstName']), 
+            'email'           => $this->setEmail($card_param['firstName']),
+            'billingAddress1' => $this->setBillingAdress($card_param['firstName']),
+            'billingCountry'  => $this->setBillingCountry($card_param['firstName']), 
+            'billingCity'     => $this->setBillingCity($card_param['firstName']), 
+            'billingPostcode' => $this->setBillingPostCode($card_param['firstName']), 
+            'billingState'    => $this->setbillingSate($card_param['firstName']) 
+        ];
 
-    /////////////////////////////////////////////////////////////////////////////////
-
-
-    private function isValid(array $params, $className) {
-
-
-     //permet de verifier si l'utilisateur a bien rempli les données du tableau concerné 
-
+        return $this->card_params;
 
     }
+
+
+    private function createTransaction(array $param_transaction) {
+
+        $this->transaction_params = [
+            'amount'           => $this->setAmount($param_transaction['amount']),
+            'currency'         => $this->setCurrency($param_transaction['currency']),
+            'transactionId'    => $this->setTransactionId($param_transaction['transactionId']), 
+        ];
+
+        if (!is_object($param_transaction['card'])) {
+            $this->transaction_params['card'] = $this->setCustomerId($param_transaction['card']);
+        } else {
+            $this->transaction_params['card'] = $param_transaction['card'];
+        }
+
+        return $this->transaction_params;
+
+    }
+
+
 
     private function getRequestResponseFormat() {
         return $this->response_format;

@@ -53,7 +53,7 @@ composer require rbtsv2/inovio-sdk-php
     /**
     * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
     */
-    $response = $this->inovio->AuthorizationAndCaptureWithToken([
+    $cardObject = $this->inovio->createCard([
         'firstName'       => 'Example',
         'lastName'        => 'Customer',
         'number'          => '4242424242424242',
@@ -69,9 +69,14 @@ composer require rbtsv2/inovio-sdk-php
     ]);
 
 
-
-    // Do a purchase transaction on the gateway
-    $transaction = $gateway->purchase([
+    /**
+     * Do a purchase transaction on the gateway
+     * @param string amount
+     * @param string currency
+     * @param mixed cardObject or Customer ID
+     * @param int tranasactionId
+     */
+    $response = $gateway->AuthorizationAndCapture([
         'amount'      => '50.00',
         'currency'    => 'EUR',
         'card'        => $cardObject,
@@ -79,7 +84,6 @@ composer require rbtsv2/inovio-sdk-php
     ]);
 
 
-    $response = $transaction->send();
     if ($response->isSuccessful()) {
         echo "Purchase transaction was successful!\n";
         $sale_id = $response->getTransactionReference();
