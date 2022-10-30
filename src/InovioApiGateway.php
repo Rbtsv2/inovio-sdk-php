@@ -61,7 +61,9 @@ class InovioApiGateway
         return $this;
     }
 
-
+    public function getVersions() {
+        return $this->versionStrings;
+    }
     /**  
     * @param Array
     * @return $this

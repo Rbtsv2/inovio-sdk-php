@@ -19,6 +19,18 @@
     }
   ],
   "autoload": {
-    "psr-4": { "Inovio\\Api\\" : "src/" }
+    "psr-4": {
+      "Inovio\\Api\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/",
+      "Tests\\Inovio\\Api\\": "tests/Invio/API/"
+    }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit tests",
+    "format": "./vendor/bin/php-cs-fixer fix --allow-risky=yes"
   }
 }
