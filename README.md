@@ -10,12 +10,12 @@ To install, simply add it to your `composer.json` file:
 
 ```json
 
-   "repositories": [
+    "repositories": [
         {
         "type": "git",
         "url": "https://github.com/Rbtsv2/inovio-sdk-php.git"
         }
-  ],
+    ],
 
 ```
 
