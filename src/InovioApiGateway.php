@@ -3,6 +3,7 @@
 namespace Inovio\Api;
 use Inovio\Api\Resources\Card;
 use Inovio\Api\Resources\Transaction;
+use Inovio\Api\Resources\Customer;
 /**
  * InovioPay Gateway
  * @date      29/10/2022
@@ -102,6 +103,12 @@ class InovioApiGateway
     private $transaction;
 
     /**
+    * @var object
+    */
+    private $customer;
+
+
+    /**
     * Params for client connexion.
     * @var array
     */
@@ -128,6 +135,7 @@ class InovioApiGateway
 
         $this->card        = new Card();
         $this->transaction = new Transaction();
+        $this->customer    = new Customer();
     }
 
 
@@ -172,6 +180,12 @@ class InovioApiGateway
     public function createCard(array $card_param) {
 
         return $this->card->create($card_param);
+
+    }
+
+    public function createCustomer(array $customer_param) {
+
+        return $this->customer->create($customer_param);
 
     }
 
@@ -292,8 +306,8 @@ class InovioApiGateway
     */
     private function send( array $params, string $endpoint, string $method) {
 
-        var_dump($params);
-        die;
+        // var_dump($params);
+        // die;
         $ch = curl_init();
         // CURLOPT_SSLVERSION =>  6; 
         // CURL_SSLVERSION_TLSv1_2 for libcurl < 7.35

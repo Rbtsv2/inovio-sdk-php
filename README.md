@@ -60,16 +60,13 @@ composer require rbtsv2/inovio-sdk-php
     */   
     $response = $this->inovio->auth();
 
+
     /**
     * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
     */
-    $cardObject = $this->inovio->createCard([
+    $customer = $this->inovio->createCustomer([
         'firstName'       => 'Example',
         'lastName'        => 'Customer',
-        'number'          => '4242424242424242',
-        'expiryMonth'     => '01',
-        'expiryYear'      => '2032',
-        'cvv'             => '123',
         'email'           => 'customer@example.com',
         'billingAddress1' => 'Mary',
         'billingCountry'  => 'SG',
@@ -78,20 +75,50 @@ composer require rbtsv2/inovio-sdk-php
         'billingState'    => 'Singapore',
     ]);
 
+    /**
+    * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
+    */
+    $card = $this->inovio->createCard([
+        'number'          => '4242424242424242',
+        'expiryMonth'     => '01',
+        'expiryYear'      => '2032',
+        'cvv'             => '123',
+    ]);
 
     /**
-     * Do a purchase transaction on the gateway
+     * Do a purchase transaction on the gateway with customer card
      * @param string amount
      * @param string currency
      * @param mixed cardObject or Customer ID
      * @param int tranasactionId
      */
     $response = $gateway->AuthorizationAndCapture([
-        'amount'      => '50.00',
-        'currency'    => 'EUR',
-        'card'        => $cardObject,
+        'amount'        => '50.00',
+        'currency'      => 'EUR',
+        'customer'      => $customer,
+        'card'          => $card,
         'transactionId' => random_int(0, 1000000000),
     ]);
+
+
+    /**
+     * Do a purchase transaction on the gateway with Token ID
+     * @param string amount
+     * @param string currency
+     * @param mixed cardObject or Customer ID
+     * @param int tranasactionId
+     */
+    $response = $gateway->AuthorizationAndCapture([
+        'amount'        => '50.00',
+        'currency'      => 'EUR',
+        'customer'      => $customer,
+        'token'         => '7BA39EAFDAAD6B3FA8A974098A267258E6D622D9',
+        'transactionId' => random_int(0, 1000000000),
+    ]);
+
+
+
+
 
 
     if ($response->isSuccessful()) {
