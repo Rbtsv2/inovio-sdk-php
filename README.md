@@ -42,6 +42,12 @@ composer require rbtsv2/inovio-sdk-php
 
 ## Start
 
+ * Card and Token payment is supported. In order to create a token payment, customer id (cust_id) and payment id (pmt_id) must be passed.
+ * You can get these values from the response of the first purchase using Card payment.
+ * This package supports only single item purchase and multiple items will only be supported in the future release.
+ * For this package to work, you must pass the API credentials as part of the request body including the Product Id (li_prod_id_1) which can be created
+ * in Inovio portal by creating product with type "Variable Price Product"
+
 ```php
 
     /**
@@ -57,12 +63,13 @@ composer require rbtsv2/inovio-sdk-php
 
     /**
     * check if the service api is available
+    * @return object $response
     */   
     $response = $this->inovio->auth();
 
-
     /**
-    * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
+    * @param string all 
+    * @return array $customer
     */
     $customer = $this->inovio->createCustomer([
         'firstName'       => 'Example',
@@ -76,22 +83,25 @@ composer require rbtsv2/inovio-sdk-php
     ]);
 
     /**
-    * case number 1 : payment with a unique token and registration of the customer id in the response for future reccurring
+    * @param string all
+    * @return array $card
     */
     $card = $this->inovio->createCard([
         'number'          => '4242424242424242',
         'expiryMonth'     => '01',
         'expiryYear'      => '2032',
-        'cvv'             => '123',
+        'cvc'             => '123',
     ]);
 
     /**
-     * Do a purchase transaction on the gateway with customer card
-     * @param string amount
-     * @param string currency
-     * @param mixed cardObject or Customer ID
-     * @param int tranasactionId
-     */
+    * Do a purchase transaction on the gateway with customer card
+    * @param string amount
+    * @param string currency
+    * @param array customer
+    * @param array card
+    * @param int tranasactionId
+    * @return object $response
+    */
     $response = $this->inovio->AuthorizationAndCapture([
         'amount'        => '50.00',
         'currency'      => 'EUR',
@@ -100,14 +110,14 @@ composer require rbtsv2/inovio-sdk-php
         'transactionId' => random_int(0, 1000000000),
     ]);
 
-
     /**
-     * Do a purchase transaction on the gateway with Token ID
-     * @param string amount
-     * @param string currency
-     * @param mixed cardObject or Customer ID
-     * @param int tranasactionId
-     */
+    * Do a purchase transaction on the gateway with Token ID
+    * @param string amount
+    * @param string currency
+    * @param array customer
+    * @param string token
+    * @param int tranasactionId
+    */
     $response = $this->inovio->AuthorizationAndCapture([
         'amount'        => '50.00',
         'currency'      => 'EUR',
@@ -124,12 +134,6 @@ composer require rbtsv2/inovio-sdk-php
     }
 
 ```
- * Card and Token payment is supported. In order to create a token payment, customer id (cust_id) and payment id (pmt_id) must be passed.
- * You can get these values from the response of the first purchase using Card payment.
- * This package supports only single item purchase and multiple items will only be supported in the future release.
- * For this package to work, you must pass the API credentials as part of the request body including the Product Id (li_prod_id_1) which can be created
- * in Inovio portal by creating product with type "Variable Price Product"
- 
 
 ## Basic Usage
 
