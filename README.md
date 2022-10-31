@@ -92,7 +92,7 @@ composer require rbtsv2/inovio-sdk-php
      * @param mixed cardObject or Customer ID
      * @param int tranasactionId
      */
-    $response = $gateway->AuthorizationAndCapture([
+    $response = $this->inovio->AuthorizationAndCapture([
         'amount'        => '50.00',
         'currency'      => 'EUR',
         'customer'      => $customer,
@@ -108,17 +108,13 @@ composer require rbtsv2/inovio-sdk-php
      * @param mixed cardObject or Customer ID
      * @param int tranasactionId
      */
-    $response = $gateway->AuthorizationAndCapture([
+    $response = $this->inovio->AuthorizationAndCapture([
         'amount'        => '50.00',
         'currency'      => 'EUR',
         'customer'      => $customer,
         'token'         => '7BA39EAFDAAD6B3FA8A974098A267258E6D622D9',
         'transactionId' => random_int(0, 1000000000),
     ]);
-
-
-
-
 
 
     if ($response->isSuccessful()) {
