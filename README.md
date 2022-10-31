@@ -10,7 +10,7 @@ no dependencies required !
 
 ## COMPATIBLE
 
-php >=5.4
+php >=7.4
 symfony >=3.4
 
 ## Installation

@@ -1,10 +1,8 @@
 <?php
 
 namespace Inovio\Api;
-
-use Inovio\Api\Endpoints\RefundEndpoint;
-
-
+use Inovio\Api\Resources\Card;
+use Inovio\Api\Resources\Transaction;
 /**
  * InovioPay Gateway
  * @date      29/10/2022
@@ -36,7 +34,28 @@ class InovioApiGateway
      * Ask token for do a payment the token is unique and for one-time use...
      */
     private const API_ASK_TOKEN = "payment/token_service.cfm";
-    
+
+    /**
+    * HTTP Methods
+    */
+    private const HTTP_GET = "GET";
+    private const HTTP_POST = "POST";
+    private const HTTP_DELETE = "DELETE";
+    private const HTTP_PATCH = "PATCH";
+
+    /**
+    * Methods request 
+    */
+    private const REQUEST_ACTION_AUTH            = "CCAUTHORIZE"; //  Ask just an Authorization request 
+    private const REQUEST_ACTION_AUTH_CAPTURE    = "CCAUTHCA"; // Authorization and Capture requests. 
+    private const REQUEST_ACTION_TEST            = "TESTGW"; // Use request action, “TESTGW”, to check if Payment Service is available to process requests.
+
+    /**
+    * Response format
+    */
+    private const REQUEST_FORMAT_RESPONSE_XML = "xml";
+    private const REQUEST_FORMAT_RESPONSE_JSON = "json";
+
     /**
     * @var string
     */
@@ -67,50 +86,26 @@ class InovioApiGateway
     */
     private $response_format;
 
-
     /**
     * @var string
     */
     private $request_action;
 
     /**
+    * @var object
+    */
+    private $card;
+
+    /**
+    * @var object
+    */
+    private $transaction;
+
+    /**
+    * Params for client connexion.
     * @var array
     */
-    private $card_params;
-
-    /**
-    * @var array
-    */
-    private $transaction_params;
-
-    /**
-    * HTTP Methods
-    */
-    private const HTTP_GET = "GET";
-    private const HTTP_POST = "POST";
-    private const HTTP_DELETE = "DELETE";
-    private const HTTP_PATCH = "PATCH";
-
-    /**
-    * Methods request 
-    */
-    private const REQUEST_ACTION_AUTH            = "CCAUTHORIZE"; //  Ask just an Authorization request 
-    private const REQUEST_ACTION_AUTH_CAPTURE    = "CCAUTHCA"; // Authorization and Capture requests. 
-    private const REQUEST_ACTION_TEST            = "TESTGW"; // Use request action, “TESTGW”, to check if Payment Service is available to process requests.
-
-    /**
-    * HTTP Methods
-    */
-    private const REQUEST_FORMAT_RESPONSE_XML = "xml";
-    private const REQUEST_FORMAT_RESPONSE_JSON = "json";
-
-
-    /**
-     * Params for client connexion.
-     * @var array
-     */
     private $params;
-
 
     public function __construct(string $username, string $password, int $site_id, int $merch_acct_id, string $response_format = null)
     {
@@ -125,7 +120,16 @@ class InovioApiGateway
         $this->setMerchantAccId($merch_acct_id);
         $this->setRequestResponseFormat($response_format);
 
+        $this->initializeResources();
+
     }
+
+    public function initializeResources() {
+
+        $this->card        = new Card();
+        $this->transaction = new Transaction();
+    }
+
 
     /**
      * @param string $param_url
@@ -159,54 +163,23 @@ class InovioApiGateway
 
     }
 
-
     public function refund(array $post_params = []) {
 
         return $this->initialize($post_params, self::API_PAYMENT, 'POST');
 
     }
 
-    private function createCard(array $card_param) {
+    public function createCard(array $card_param) {
 
-        return $this->card_params = [
-            'firstName'       => $this->setFirstname($card_param['firstName']),
-            'lastName'        => $this->setLastname($card_param['firstName']),
-            'number'          => $this->setNumber($card_param['firstName']),
-            'expiryMonth'     => $this->setExpiryMonth($card_param['firstName']), 
-            'expiryYear'      => $this->setExpiryYear($card_param['firstName']), 
-            'cvv'             => $this->setCvc($card_param['firstName']), 
-            'email'           => $this->setEmail($card_param['firstName']),
-            'billingAddress1' => $this->setBillingAdress($card_param['firstName']),
-            'billingCountry'  => $this->setBillingCountry($card_param['firstName']), 
-            'billingCity'     => $this->setBillingCity($card_param['firstName']), 
-            'billingPostcode' => $this->setBillingPostCode($card_param['firstName']), 
-            'billingState'    => $this->setbillingSate($card_param['firstName']) 
-        ];
-
-        return $this->card_params;
+        return $this->card->create($card_param);
 
     }
-
 
     private function createTransaction(array $param_transaction) {
 
-        $this->transaction_params = [
-            'amount'           => $this->setAmount($param_transaction['amount']),
-            'currency'         => $this->setCurrency($param_transaction['currency']),
-            'transactionId'    => $this->setTransactionId($param_transaction['transactionId']), 
-        ];
-
-        if (!is_object($param_transaction['card'])) {
-            $this->transaction_params['card'] = $this->setCustomerId($param_transaction['card']);
-        } else {
-            $this->transaction_params['card'] = $param_transaction['card'];
-        }
-
-        return $this->transaction_params;
-
+        return $this->transaction->create($param_transaction);
+   
     }
-
-
 
     private function getRequestResponseFormat() {
         return $this->response_format;
@@ -319,8 +292,8 @@ class InovioApiGateway
     */
     private function send( array $params, string $endpoint, string $method) {
 
-        // var_dump($params);
-        // die;
+        var_dump($params);
+        die;
         $ch = curl_init();
         // CURLOPT_SSLVERSION =>  6; 
         // CURL_SSLVERSION_TLSv1_2 for libcurl < 7.35
